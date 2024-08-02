@@ -1,0 +1,222 @@
+{% extends 'main/base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block navbar %}
+{% include 'includes/navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<!-- Header -->
+<div class="row mt-3 justify-content-md-center">
+    <div class="col col-lg-10 p-2 mx-1 rounded border bg-white">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+          <a class="navbar-brand" href="#"><h4><i class="bi bi-people"></i>&nbsp;{% trans "Persons" %}</h4></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#personsNavbar" aria-controls="personsNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- Offcanvas Header -->
+          <div class="offcanvas offcanvas-end bg-white" tabindex="-1" id="personsNavbar" aria-labelledby="offcanvasPersonsLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasPersonsLabel">{% trans "Persons" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <!-- Offcanvas Form -->
+            <div class="d-lg-none">
+              <div class="offcanvas-body">
+                <a class="btn btn-outline-secondary btn-sm my-2" href="/directory/create_person/"><i class="bi bi-plus-square"></i>&nbsp;{% trans "Add Person" %}</a>
+                <form class="col btn-sm" role="search">
+                  <div class="my-2">{{searchform.q}}</div>
+                  <button class="btn btn-outline-success mr-2" type="submit">{% trans "Search" %}</button>
+                  <a href="/directory/persons/" class="btn btn-outline-secondary my-2">{% trans "Clear" %}</a>
+                </form>
+              </div>
+            </div>
+            <!-- Incanvas Form -->
+            <div class="d-none d-lg-block">
+              <div class="collapse navbar-collapse" id="personsNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item my-1">
+                    <a class="btn btn-outline-secondary btn-sm" href="/directory/create_person/"><i class="bi bi-plus-square"></i>&nbsp;{% trans "Add Person" %}</a>
+                  </li>
+                </ul>
+                <form class="d-flex" role="search">
+                  {{searchform.q}}
+                  <button class="btn btn-outline-success mx-2" type="submit">{% trans "Search" %}</button>
+                </form>
+                <div>
+                  <a href="/directory/persons/" class="btn btn-outline-secondary my-2">{% trans "Clear" %}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="row mt-3 justify-content-md-center">
+    <div class="col col-lg-10 p-3 mx-1 rounded border bg-white">
+    {% if person_list %}
+    <!-- Table lg -->
+    <div class="table-responsive d-none d-lg-block">
+      <table class="table table-hover" id="person_list" name="Person_List">
+          <!-- Table Header -->
+          <thead class="table">
+              <th class="px-3">{% trans "Name" %}</th>
+              <th>{% trans "Position" %}</th>
+              <th>{% trans "Company" %}</th>
+              <th>{% trans "CellPhone" %}</th>
+              <th>{% trans "eMail" %}</th>
+              <th>Fav</th>
+          </thead>
+          <!-- Table Body -->
+          <tbody>
+              {% for person in person_list %}
+              <tr>
+                  {% if  person.lastName and person.firstName %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.lastName }}, {{ person.firstName }}</a></td>
+                  {% elif person.lastName %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.lastName }}</a></td>
+                  {% else %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.firstName }}</a></td>
+                  {% endif %}
+                  <td>{{ person.position }}</td>
+                  {% if person.company.deleted == False or not person.company.id %}
+                  <td><a class="nav-link" href="/directory/company/{{ person.company.id }}/0/5">{{ person.company.companyName }}</a></td>
+                  {% else %}
+                  <td>{{ person.company.companyName }} (deleted)</td>
+                  {% endif %}
+                  <td>{{ person.celphone }}</td>
+                  <td><a class="nav-link" id="mail-link" href="mailto:{{person.email}}">{{ person.email }}</a></td>
+                  <td>
+                    {% if person.fav %}
+                  <span class="px-2" hx-get="/directory/unlink_fav/{{ fav.id }}/" hx-swap="outerHTML"><i class="bi bi-star-fill h5 hx-pointer text-warning"></i></span>
+                  {% else %}
+                  <span class="px-2" hx-get="/directory/link_fav/person_obj/{{ person.id }}/" hx-swap="outerHTML"><i class="bi bi-star h5 hx-pointer text-warning"></i></span>
+                  {% endif %}
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+
+    <!-- Table md -->
+    <div class="table-responsive d-none d-sm-block d-lg-none">
+      <table class="table table-hover" id="person_list" name="Person_List">
+          <!-- Table Header -->
+          <thead class="table">
+              <th class="px-3">{% trans "Name" %}</th>
+              <th>{% trans "Company" %}</th>
+              <th>{% trans "CellPhone" %}</th>
+              <th>{% trans "eMail" %}</th>
+          </thead>
+          <!-- Table Body -->
+          <tbody>
+              {% for person in person_list %}
+              <tr>
+                  {% if  person.lastName and person.firstName %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.lastName }}, {{ person.firstName }}</a></td>
+                  {% elif person.lastName %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.lastName }}</a></td>
+                  {% else %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.firstName }}</a></td>
+                  {% endif %}
+                  {% if person.company.deleted == False or not person.company.id %}
+                  <td><a class="nav-link" href="/directory/company/{{ person.company.id }}/0/5">{{ person.company.companyName }}</a></td>
+                  {% else %}
+                  <td>{{ person.company.companyName }} (deleted)</td>
+                  {% endif %}
+                  <td>{{ person.celphone }}</td>
+                  <td><a class="nav-link" id="mail-link" href="mailto:{{person.email}}">{{ person.email }}</a></td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+
+    <!-- Table xs -->
+    <div class="table-responsive d-block d-sm-none">
+      <table class="table table-hover" id="person_list" name="Person_List">
+          <!-- Table Header -->
+          <thead class="table">
+              <th class="px-3">{% trans "Name" %}</th>
+              <th>{% trans "CellPhone" %}</th>
+          </thead>
+          <!-- Table Body -->
+          <tbody>
+              {% for person in person_list %}
+              <tr>
+                  {% if  person.lastName and person.firstName %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.lastName }}, {{ person.firstName }}</a></td>
+                  {% elif person.lastName %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.lastName }}</a></td>
+                  {% else %}
+                  <td class="px-3"><a class="nav-link" href="/directory/person/{{ person.id }}/">{{ person.firstName }}</a></td>
+                  {% endif %}
+                  <td>{{ person.celphone }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+      {% if person_list.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="{% url 'directory:Persons' %}?page=1&q={{q}}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item">
+          <a class="page-link" id="page-link" href="{% url 'directory:Persons'%}?page={{ person_list.previous_page_number }}&q={{q}}">&lt;</a>
+          </li>
+      {% else %}
+          <li class="page-item disabled">
+          <span class="page-link">&laquo;</span>
+          </li>
+          <li class="page-item disabled">
+          <span class="page-link">&lt;</span>
+          </li>
+      {% endif %}
+  
+      <li class="page-item">
+          <span class="page-link">{% trans "Page" %} {{ person_list.number }} {% trans "of" %} {{ person_list.paginator.num_pages }}</span>
+      </li>
+  
+      {% if person_list.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="{% url 'directory:Persons' %}?page={{ person_list.next_page_number }}&q={{q}}" aria-label="Next">
+              <span aria-hidden="true">&gt;</span>
+            </a>
+          <li class="page-item">
+            <a class="page-link" href="{% url 'directory:Persons' %}?page={{ person_list.paginator.num_pages }}&q={{q}}" aria-label="Last">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+      {% else %}
+          <li class="page-item disabled">
+          <span class="page-link">&gt;</span>
+          </li>
+          <li class="page-item disabled">
+          <span class="page-link">&raquo;</span>
+          </li>
+      {% endif %}
+      </ul>
+  </nav>
+
+  {% else %}
+        <p>{% trans "No persons available." %}</p>
+    {% endif %}
+
+    </div>
+</div>
+
+<script src="{% static 'directory/js/persons_helper.js' %}"></script>
+
+{% endblock %}

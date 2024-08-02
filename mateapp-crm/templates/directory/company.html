@@ -1,0 +1,80 @@
+{% extends 'main/base.html' %}
+{% load i18n %}
+
+{% block navbar %}
+{% include 'includes/navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="row py-3 justify-content-center" id="company">
+    <div class="col col-lg-10 p-3 px-5 mx-1 rounded border bg-white">
+        <h2>{{company.companyName}}
+            {% if fav %}
+            <span class="px-2" hx-get="/directory/unlink_fav/{{ fav.id }}/" hx-swap="outerHTML"><i class="bi bi-star-fill h5 hx-pointer text-warning"></i></span>
+            {% else %}
+            <span class="px-2" hx-get="/directory/link_fav/company_obj/{{ company.id }}/" hx-swap="outerHTML"><i class="bi bi-star h5 hx-pointer text-warning"></i></span>
+            {% endif %}
+        </h2>
+        <hr class="separator">
+        
+        <div class="row row-col-2 justify-content-start">
+            <div class="col col-10 col-md-6 py-1">
+                <p class="mb-2"><small>{% trans "DATA:" %}</small></p>
+                <div class="ps-1">
+                    <h6>{{company.companyPhone}}</h6>
+                    <h6><a class="nav-link" target="_blank" href="http://{{company.website}}">{{company.website}}</a></h6>
+                    <h6>{{company.tax_id}}</h6>
+                </div>
+            </div>
+            <div class="col col-10 col-md-6 py-1 light-border">
+                <p class="mb-2"><small>{% trans "ADDRESS:" %}</small></p>
+                <div class="ps-1">
+                    <h6>{{company.address.street}}</h6>
+                    <h6>{{company.address.postalCode}}</h6>
+                    <h6>{{company.address.city}}</h6>
+                    <h6>{{company.address.state}}</h6>
+                    <h6>{{company.address.country}}</h6>
+                </div>
+                <div class="row pt-3 justify-content-center">
+                    <div class="col col-lg-10 d-flex justify-content-center">       
+                        <p><a href="{% url 'directory:EditCompany' id=company.id %}" class="btn btn-outline-success btn-sm px-4 mx-3" role="button">{% trans "Edit" %}</a></p>
+                        {% comment %} <p><a href="{% url 'directory:Companies' a=0 b=10 %}" class="btn btn-outline-secondary btn-sm px-4 mx-3" role="button">{% trans "Back" %}</a></p> {% endcomment %}
+                        {% if not person_list %}
+                        <p><a href="{% url 'directory:DeleteCompany' id=company.id %}" class="btn btn-outline-danger btn-sm px-4 mx-3" role="button">{% trans "Delete" %}</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-3">
+            {% include 'directory/partials/company_notes_title.html' %}
+        </div>
+        
+        {% if person_list %}
+        <!-- Tabla -->
+        <div class="row justify-content-center">
+            <div class="col p-3">  
+                <div id="persons_list">
+                {% include 'directory/partials/company_persons_collapsed.html' %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-3 justify-content-md-center">
+    <div class="col col-lg-10 p-3 mx-1 rounded border bg-white">
+        <div class="container-fluid px-4">
+            <span class="h4"><i class="bi bi-stickies"></i>&nbsp;{% trans "Posts" %}</span>
+            <span class="ms-3 mb-2 btn btn-outline-secondary btn-sm" hx-get="{% url 'directory:companyPostCreate' id=company.id %}" hx-target="#create" hx-swap="outerHTML swap:0.2s"><i class="bi bi-plus-square"></i>&nbsp;{% trans "Add Post" %}</span>
+        </div>
+    </div>
+</div>
+
+{% include 'directory/partials/company_posts_list.html' %}
+
+{% endblock %}

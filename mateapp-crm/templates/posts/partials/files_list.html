@@ -1,0 +1,6 @@
+{% load i18n %}
+<div class="my-2" hx-target="#files_{{post.id}}"  hx-swap="outerHTML swap:0.2s" id="files_{{post.id}}">
+{% for file in files %}
+<a class="badge text-bg-{{file.color}} nav-link" href="{{path}}{{file.file}}">{{file.shortName}}</a>
+{% endfor %}
+</div>

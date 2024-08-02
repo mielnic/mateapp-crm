@@ -1,0 +1,16 @@
+{% load i18n %}
+<div id="post" hx-swap="outerHTML swap:0.2s" hx-target="this">
+    <div class="row px-3 mb-2 justify-content-start">
+        <div class="col mt-3 py-1 px-3 col-lg-10 hx-pointer" hx-get="{% url 'posts:title' id=post.id %}">
+            {{ post.post|linebreaks }} <span class="text-primary"><small>{% trans "< less" %}&nbsp;|&nbsp;</small></span>
+        </div>
+    </div>
+    <div class="my-3">
+        {% if files %}
+            <i class="bi bi-paperclip h5 text-secondary me-2">></i>
+            {% for file in files %}
+            <a class="badge text-bg-{{file.color}} nav-link" href="{{path}}{{file.file}}" target="_blank">{{file.shortName}}</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>

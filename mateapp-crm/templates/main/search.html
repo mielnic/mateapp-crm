@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block navbar %}
+{% include 'includes/navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<div class="row py-3 justify-content-center">
+    <div class="col col-lg-10 rounded border bg-white m-1 p-4">
+        <form method="GET">
+            <div class="input-group">
+            {{searchform.q}}
+            <button type="submit" class="btn btn-outline-success px-2" id="button-addon">{% trans "Search" %}</button>
+            <a class="btn btn-outline-secondary px-2" href="/search" id="button-addon2">{% trans "Clear" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% for result in results %}
+<div class="row mt-2 justify-content-center">
+    <div class="col col-lg-10 rounded border bg-white p-3 mx-1 ">
+    {% if result.entity == 'person' %}
+    <div class="mx-3">
+        <strong><a class="nav-link" href="/directory/person/{{ result.id }}/">{{ result }}</a></strong>
+        <p>{{ result.company.companyName }}</p>
+    </div>
+    {% else %}
+    <div class="mx-3">
+        <strong><a class="nav-link" href="/directory/company/{{ result.id }}/0/5/">{{ result }}</a></strong>
+        <p>{{ result.tax_id }} </p>
+    </div>
+    {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<script src="{% static 'main/js/search_helper.js' %}"></script>
+{% endblock content %}
+

@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block navbar %}
+{% include 'includes/navbar.html' %}
+{% endblock navbar %}
+
+{% load i18n %}
+{% block content %}
+
+<div class="row row-col-2 py-3 justify-content-center">
+    <div class="col bg-white mx-1 px-5 py-3 mb-2 border col-lg-5 rounded">
+        <div style="text-align: center">
+            <h2>{% trans "User Profile" %}</h2>
+            </div>
+        <br>
+        <h4>{{user.first_name}} {{user.last_name}}</h4>
+        <br>
+        <h6> <strong>{% trans "eMail:" %}</strong> {{user.email}}</h6>
+        <br>
+        <h6><strong>{% trans "User Type:" %}</strong> {{user.role}}</h6>
+        <br>
+        {% if user.is_active %} 
+        <h6><strong>{% trans "User Status:" %}</strong> {% trans "Active" %}</h6>
+        {% else %}
+        <h6><strong>{% trans "User Status:" %}</strong> {% trans "Inactive" %}</h6> 
+        {% endif %}
+        <br>
+        <div style="text-align: center">
+            <p><a href="/users/profile_edit/" class="btn btn-outline-success px-4 mx-3" role="button">{% trans "Edit" %}</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

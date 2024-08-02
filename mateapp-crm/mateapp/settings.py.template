@@ -57,6 +57,7 @@ INSTALLED_APPS += [
     'posts',
     'dbbackup',
     'logger',
+    'marketing',
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"

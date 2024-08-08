@@ -12,7 +12,7 @@ class LogFileProxyAdmin(ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path('', self.admin_site.admin_view(self.view_logfile), name='ovd_logfileproxy_changelist'),
+            path('', self.admin_site.admin_view(self.view_logfile), name='logfileproxy_changelist'),
         ]
         return custom_urls + urls
     

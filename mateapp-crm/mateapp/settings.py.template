@@ -215,7 +215,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'vd': {
+        'logger': {
             'handlers': ['logfile'],
             'level': 'INFO',
             'propagate': True,
